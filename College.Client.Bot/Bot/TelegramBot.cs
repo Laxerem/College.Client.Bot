@@ -44,11 +44,12 @@ abstract class Bot : IBot{
 class Telegram_Bot : Bot {
     private TelegramBotClient bot;
     private new CancellationTokenSource cts_token;
-    private IUserController data = new TelegramUserController();
+    private IUserController data;
 
     // Конструктор класса
     public Telegram_Bot(string TOKEN) {
         cts_token = new CancellationTokenSource();
+        data = new TelegramUserController();
         bot = new TelegramBotClient(TOKEN, null, cts_token.Token);
         bot.OnMessage += OnMessage;
         bot.OnUpdate += OnUpdate;
@@ -57,36 +58,38 @@ class Telegram_Bot : Bot {
     protected async Task OnMessage(Message msg, UpdateType type) {
         switch (msg.Text) {
             case "/start":
-                await bot.SendMessage(msg.Chat, MessageView.start_message(), ParseMode.Markdown);
+                await bot.SendMessage(msg.Chat, data.start_message(), ParseMode.Markdown);
                 break;
             case "/schedule":
-
-                TimeSpan timeout = TimeSpan.FromSeconds(5); // Устанавливаем тайм-аут
-
-                Task<string> scheduleTask = data.actual_schedule("24-13");
-                Task delayTask = Task.Delay(timeout);
-
-                if (await Task.WhenAny(scheduleTask, delayTask) == scheduleTask)
-                {
-                    // Если данные пришли вовремя
-                    try
-                    {
-                        string schedule = await scheduleTask; // Дожидаемся завершения
-                        await bot.SendMessage(msg.Chat, schedule, ParseMode.Markdown);
-                        Console.WriteLine("Данные отправлены");
-                    }
-                    catch (Telegram.Bot.Exceptions.ApiRequestException error)
-                    {
-                        Console.WriteLine($"ОШИБКА: {error.Message}");
-                    }
-                }
-                else
-                {
-                    // Если таймер истёк
-                    await bot.SendMessage(msg.Chat, "⏳ `IT COLLEGE OFFLINE` ⏳\n Запрос улетает в никуда...", ParseMode.Markdown);
-                    Console.WriteLine("ОШИБКА: Превышено время ожидания.");
-                }
+                await bot.SendMessage(msg.Chat, await data.actual_schedule("24-13"), ParseMode.Markdown);
                 break;
+
+                // TimeSpan timeout = TimeSpan.FromSeconds(5); // Устанавливаем тайм-аут
+
+                // Task<string> scheduleTask = data.actual_schedule("24-13");
+                // Task delayTask = Task.Delay(timeout);
+
+                // if (await Task.WhenAny(scheduleTask, delayTask) == scheduleTask)
+                // {
+                //     // Если данные пришли вовремя
+                //     try
+                //     {
+                //         string schedule = await scheduleTask; // Дожидаемся завершения
+                //         await bot.SendMessage(msg.Chat, schedule, ParseMode.Markdown);
+                //         Console.WriteLine("Данные отправлены");
+                //     }
+                //     catch (Telegram.Bot.Exceptions.ApiRequestException error)
+                //     {
+                //         Console.WriteLine($"ОШИБКА: {error.Message}");
+                //     }
+                // }
+                // else
+                // {
+                //     // Если таймер истёк
+                //     await bot.SendMessage(msg.Chat, "⏳ `IT COLLEGE OFFLINE` ⏳\n Запрос улетает в никуда...", ParseMode.Markdown);
+                //     Console.WriteLine("ОШИБКА: Превышено время ожидания.");
+                // }
+                // break;
         }
     }
 

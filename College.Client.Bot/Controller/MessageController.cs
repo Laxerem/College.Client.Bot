@@ -39,13 +39,16 @@ public class MessageView {
 [/schedule](https://t.me/Diskay_bot?start=/schedule) - посмотреть текущее расписание";
     }
 
+    public static string RequestTimeOut() {
+        return "⏳ `IT COLLEGE OFFLINE` ⏳\n Запрос улетает в никуда...";
+    }
 
     public string Day_data(List<IApiResponse> data) {
         Console.WriteLine("Структурирую данные");
         MessageData message = new MessageData();
     
         message.add_string($"*{data[0].group}*");
-        message.add_string($"Расписание на сегодня: *{DataController.Get_time()}*\n");
+        message.add_string($"Расписание на сегодня: *{TimeController.Get_time()}*\n");
         message.add_string($"*- - - >* *Начало пар:* `{data[0].start.Substring(11, 5)}` 😩");
         message.enter();
 

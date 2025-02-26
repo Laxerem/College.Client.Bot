@@ -5,6 +5,7 @@ using System.Text.Json.Nodes;
 namespace Home.Client.Bot;
 
 interface IUserController {
+    public string start_message();
     public Task<string> actual_schedule(string group_number);
 }
 
@@ -37,52 +38,15 @@ class PostData {
 
 class TelegramUserController : IUserController {
     static HttpClient httpClient = new HttpClient();
+    CancellationTokenSource cts_token = new CancellationTokenSource();
+    Schedule.Schedule schedule = new Schedule.Schedule(); 
+
+    public string start_message() {
+        return MessageView.start_message();
+    }
     
     public async Task<string> actual_schedule(string group_number) {
-        Time current_day = DataController.Get_day();
-
-        PostData postData = new PostData {
-            d_start = current_day.Start,
-            d_end = current_day.End,
-            group = $@"ИТ{group_number}"
-        };
-
-        string PostData_json = JsonSerializer.Serialize(postData);
-
-        var content = new StringContent(PostData_json, Encoding.UTF8, "application/json");
-
-        using var request = new HttpRequestMessage(HttpMethod.Post, "https://portal.it-college.ru/schedule.php");
-        request.Content = content;
-
-        Console.WriteLine("Отправляю запрос...");
-        using var response = await httpClient.SendAsync(request);
-
-        if (response.IsSuccessStatusCode && response.Content != null) {
-            Console.WriteLine("Ответ получен");
-            Console.WriteLine("Читаю данные...");
-            string res = await response.Content.ReadAsStringAsync();
-            Console.WriteLine("Данные прочтены");
-            Console.WriteLine("Десериализация данных...");
-
-            try {
-                List<IApiResponse> response_data = JsonSerializer.Deserialize<List<IApiResponse>>(res);
-                Console.WriteLine("Данные десериализованы");
-
-                if (!response_data.Any()) {
-                    return "Сегодня пар нет :)";
-                }
-
-                MessageView message = new MessageView();
-                return message.Day_data(response_data);
-            }
-            catch (JsonException ex) {
-                Console.WriteLine($"Ошибка десериализации: {ex.Message}");
-                return "Ошибка десериализации данных";
-            }
-        }
-
-        else {
-            return "Не удаётся отправить запрос";
-        }
+        return await schedule.actual_schedule(group_number);
     }
-}
+};
+

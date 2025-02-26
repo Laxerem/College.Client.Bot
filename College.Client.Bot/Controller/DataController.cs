@@ -1,44 +1,30 @@
-namespace Home.Client.Bot;
+using System;
 
-public class Time {
-    public string Start {get; set;}
-    public string End {get; set;}
+namespace College.Client.Bot.Controller;
 
-    public Time(string start, string end) {
-        this.Start = start;
-        this.End = end;
-    }
+public class ISubGroup {
+    public required string SClID {get; set;}
+    public required string SGrID {get; set;}
+    public required string SGCaID {get; set;}
+    public required string STopic {get; set;}
+    public required string STitle {get; set;}
 }
 
-public class DataController {
-    public static string Get_time() {
-        var current_datetime = DateTime.Now;
-        string result = current_datetime.ToString("dd.MM");
+public class IApiResponse {
+    public required string ClID {get; set;}
+    public required string Day {get; set;}
+    public required string group {get; set;}
+    public required string topic {get; set;}
+    public required string start {get; set;}
+    public required string end {get; set;}
+    public required string room {get; set;}
+    public required string color {get; set;}
+    public required string title {get; set;}
+    public List<ISubGroup> SubGroup {get; set;}
+}
 
-        return result;
-    }
-
-    public static Time Get_week() {
-        var current_datetime = DateTime.Now;
-        int days_of_week = (int)current_datetime.DayOfWeek;
-        
-        DateTime week_start = current_datetime.AddDays(-days_of_week);
-        DateTime week_end = week_start.AddDays(+7);
-
-        string start = week_start.ToString("yyyy-MM-ddT19:00:00.000Z");
-        string end = week_end.ToString("yyyy-MM-ddT19:00:00.000Z");
-
-        var week = new Time(start, end);
-        return week;
-    }
-
-    public static Time Get_day() {
-        var current_datetime = DateTime.Now;
-        
-        string day_start = current_datetime.AddDays(-1).ToString("yyyy-MM-ddT19:00:00.000Z");
-        string day_end = current_datetime.ToString("yyyy-MM-ddT19:00:00.000Z");
-
-        var day = new Time(day_start, day_end);
-        return day;
-    }
+class PostData {
+    public required string d_start {get; set;}
+    public required string d_end {get; set;}
+    public required string group {get; set;}
 }
