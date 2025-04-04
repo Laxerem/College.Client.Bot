@@ -1,5 +1,4 @@
-using Home.Client.Bot;
-using Microsoft.AspNetCore.Http.Features;
+using College.Client.Bot;
 
 class MessageData {
     private string message = "";

@@ -1,12 +1,8 @@
-using Home.Client.Bot.Schedule;
-using Microsoft.AspNetCore.Components;
 using Telegram.Bot;
-using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Types.ReplyMarkups;
 
-namespace Home.Client.Bot;
+namespace College.Client.Bot;
 
 interface IBot {
     public Task Start();
@@ -63,33 +59,6 @@ class Telegram_Bot : Bot {
             case "/schedule":
                 await bot.SendMessage(msg.Chat, await data.actual_schedule("24-13"), ParseMode.Markdown);
                 break;
-
-                // TimeSpan timeout = TimeSpan.FromSeconds(5); // Устанавливаем тайм-аут
-
-                // Task<string> scheduleTask = data.actual_schedule("24-13");
-                // Task delayTask = Task.Delay(timeout);
-
-                // if (await Task.WhenAny(scheduleTask, delayTask) == scheduleTask)
-                // {
-                //     // Если данные пришли вовремя
-                //     try
-                //     {
-                //         string schedule = await scheduleTask; // Дожидаемся завершения
-                //         await bot.SendMessage(msg.Chat, schedule, ParseMode.Markdown);
-                //         Console.WriteLine("Данные отправлены");
-                //     }
-                //     catch (Telegram.Bot.Exceptions.ApiRequestException error)
-                //     {
-                //         Console.WriteLine($"ОШИБКА: {error.Message}");
-                //     }
-                // }
-                // else
-                // {
-                //     // Если таймер истёк
-                //     await bot.SendMessage(msg.Chat, "⏳ `IT COLLEGE OFFLINE` ⏳\n Запрос улетает в никуда...", ParseMode.Markdown);
-                //     Console.WriteLine("ОШИБКА: Превышено время ожидания.");
-                // }
-                // break;
         }
     }
 

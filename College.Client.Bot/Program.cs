@@ -1,6 +1,6 @@
 ﻿using Telegram.Bot;
 using DotNetEnv;
-using Home.Client.Bot;
+using College.Client.Bot;
 
 Env.Load();
 

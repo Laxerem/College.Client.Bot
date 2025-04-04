@@ -1,14 +1,24 @@
-namespace Home.Client.Bot;
+using Microsoft.AspNetCore.SignalR;
+
+namespace College.Client.Bot;
 
 public class Time {
-    public string Start {get; set;}
-    public string End {get; set;}
+    private string Start {get; set;}
+    private string End {get; set;}
 
     public Time(string start, string end) {
         this.Start = start;
         this.End = end;
     }
-}
+
+    public string Get_day_start() {
+        return this.Start;
+    }
+
+    public string Get_day_end() {
+        return this.End;
+    }
+} 
 
 public class TimeController {
     public static string Get_time() {
@@ -40,5 +50,14 @@ public class TimeController {
 
         var day = new Time(day_start, day_end);
         return day;
+    }
+
+    public Time Get_time_interval(DateOnly date_start, DateOnly date_end) {
+        string start = date_start.ToString("yyyy-MM-dd");
+        string end = date_end.ToString("yyyy-MM-dd");
+
+        Time time_interval = new Time(start, end);
+
+        return new Time(start, end);
     }
 }
