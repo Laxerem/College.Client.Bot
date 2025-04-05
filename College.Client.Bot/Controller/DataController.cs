@@ -52,8 +52,6 @@ class DataController {
                 BackoffType = DelayBackoffType.Constant // Постоянная задержка
             })
             .Build();
-
-
     private PostData postData;
 
     public DataController(string day_start, string day_end, string group_number) {
@@ -74,7 +72,7 @@ class DataController {
             string postDataJson = JsonSerializer.Serialize(this.postData);
             var content = new StringContent(postDataJson, Encoding.UTF8, "application/json");
 
-            using var request = new HttpRequestMessage(HttpMethod.Post, "https://portal.students.it-college.ru/schedule.php");
+            using var request = new HttpRequestMessage(HttpMethod.Post, "https://portal.it-college.ru/schedule.php");
             request.Content = content;
 
             var response = await _pipelineProvider.ExecuteAsync(async cancellationToken =>
@@ -88,11 +86,7 @@ class DataController {
             return response_data;
         }
         catch (TaskCanceledException ex) {
-            throw new Exception(ex.Message);
-        }
-        catch (HttpRequestException ex) when (ex.InnerException is AuthenticationException) {
-            Console.WriteLine($"Ошибка SSL: {ex.Message}");
-            throw;
+            throw new Exception("RequestTimeOut", ex);
         }
     }
 }
